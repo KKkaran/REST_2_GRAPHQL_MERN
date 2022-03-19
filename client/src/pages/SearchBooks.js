@@ -119,6 +119,7 @@ const SearchBooks = () => {
         </h2>
         <CardColumns>
           {searchedBooks.map((book) => {
+            console.log(book)
             return (
               <Card key={book.bookId} border='dark'>
                 {book.image ? (
