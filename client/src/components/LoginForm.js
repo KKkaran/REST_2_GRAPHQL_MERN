@@ -16,7 +16,7 @@ const LoginForm = () => {
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  const [loginUser,{data,loading}] = useMutation(Mutation_User_Login)
+  const [loginUser,{error}] = useMutation(Mutation_User_Login)
   // const handleFormSubmit = async (event) => {
   //   event.preventDefault();
 
@@ -78,9 +78,9 @@ const LoginForm = () => {
   return (
     <>
       <Form noValidate validated={validated} onSubmit={useMutation2}>
-        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
+        {/* <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your login credentials!
-        </Alert>
+        </Alert> */}
         <Form.Group>
           <Form.Label htmlFor='email'>Email</Form.Label>
           <Form.Control
@@ -113,6 +113,7 @@ const LoginForm = () => {
           Submit
         </Button>
       </Form>
+      {error && <div var>Login failed</div>}
     </>
   );
 };

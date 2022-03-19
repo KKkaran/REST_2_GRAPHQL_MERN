@@ -37,3 +37,17 @@ export const Mutation_User_Signup = gql`
     }
 }
 `
+
+export const Mutation_addBook = gql `
+  mutation($description: String!, $bookId: String!, $title: String!){
+    addBook(description: $description, bookId: $bookId, title: $title) {
+      username
+      email
+      savedBooks {
+        bookId
+        title
+        description
+      }
+    }
+  }
+`

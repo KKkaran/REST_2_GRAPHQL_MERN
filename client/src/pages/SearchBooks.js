@@ -4,15 +4,15 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 import Auth from '../utils/auth';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
-import { useQuery } from '@apollo/client';
-import { QUERY_ME, QUERY_USERS } from '../utils/queries';
+import { useQuery, useMutation } from '@apollo/client';
+import { QUERY_ME, QUERY_USERS, Mutation_addBook } from '../utils/queries';
 
 const SearchBooks = () => {
   // create state for holding returned google api data
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
-
+  const [addBook,{error}] = useMutation(Mutation_addBook)
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
@@ -47,6 +47,7 @@ const SearchBooks = () => {
       }));
 
       setSearchedBooks(bookData);
+      console.log(searchedBooks)
       setSearchInput('');
     } catch (err) {
       console.error(err);
@@ -64,23 +65,31 @@ const SearchBooks = () => {
     if (!token) {
       return false;
     }
-
-    try {
-      const response = await saveBook(bookToSave, token);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      // if book successfully saves to user's account, save book id to state
+    console.log(bookToSave)
+    try{
+      const data = await addBook({variables:bookToSave})
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-    } catch (err) {
-      console.error(err);
     }
+    catch(er){
+      console.log(er)
+    }
+    // try {
+    //   const response = await saveBook(bookToSave, token);
+
+    //   if (!response.ok) {
+    //     throw new Error('something went wrong!');
+    //   }
+
+    //   // if book successfully saves to user's account, save book id to state
+    //   setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+    // } catch (err) {
+    //   console.error(err);
+    // }
   };
   if(Auth.loggedIn()){
     console.log("logged in")
     console.log(Auth.getProfile().data.email)
+    console.log(searchedBooks)
   }else{
     console.log("need to log in")
   }
@@ -118,8 +127,9 @@ const SearchBooks = () => {
             : 'Search for a book to begin'}
         </h2>
         <CardColumns>
+         
           {searchedBooks.map((book) => {
-            console.log(book)
+            
             return (
               <Card key={book.bookId} border='dark'>
                 {book.image ? (

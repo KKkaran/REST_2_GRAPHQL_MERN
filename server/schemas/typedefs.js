@@ -6,6 +6,9 @@ const typedefs = gql`
         description:String
         bookId:String
         title:String
+        authors:[String]
+        image:String
+        link:String
     }
 
     type User{
@@ -31,7 +34,9 @@ const typedefs = gql`
         login(email: String!, password: String!): Auth
         addUser(username: String!, email: String!, password :String!):
         Auth
-        
+        addBook(description:String!, bookId:String!,
+            title:String!) : User
+        deleteBook(bookId:String!):User 
     }
 
 
