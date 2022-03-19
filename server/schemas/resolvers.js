@@ -15,6 +15,14 @@ const resolvers = {
       
         throw new AuthenticationError('Not logged in');
       },
+      user:async(p,{username})=>{
+        const params = username ? {username} : {}
+        return User.findOne(params)
+      },
+      users:async(p,{username})=>{
+        const params = username ? {username} : {}
+        return User.find(params);
+      }
     },
     Mutation: {
       login: async(parent,{email, password} )=>{

@@ -4,6 +4,8 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 import Auth from '../utils/auth';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+import { useQuery } from '@apollo/client';
+import { QUERY_USERS } from '../utils/queries';
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -77,7 +79,9 @@ const SearchBooks = () => {
       console.error(err);
     }
   };
-
+  const {loading,data} = useQuery(QUERY_USERS)
+  const users = data?.users || []
+  console.log(users)
   return (
     <>
       <Jumbotron fluid className='text-light bg-dark'>
