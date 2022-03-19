@@ -5,7 +5,7 @@ import Auth from '../utils/auth';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { useQuery } from '@apollo/client';
-import { QUERY_USERS } from '../utils/queries';
+import { QUERY_ME, QUERY_USERS } from '../utils/queries';
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -15,7 +15,6 @@ const SearchBooks = () => {
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
   useEffect(() => {
@@ -79,9 +78,12 @@ const SearchBooks = () => {
       console.error(err);
     }
   };
-  const {loading,data} = useQuery(QUERY_USERS)
-  const users = data?.users || []
-  console.log(users)
+  if(Auth.loggedIn()){
+    console.log("logged in")
+    console.log(Auth.getProfile().data.email)
+  }else{
+    console.log("need to log in")
+  }
   return (
     <>
       <Jumbotron fluid className='text-light bg-dark'>

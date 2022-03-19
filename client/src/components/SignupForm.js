@@ -3,7 +3,8 @@ import { Form, Button, Alert } from 'react-bootstrap';
 
 import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
-
+import { useMutation } from '@apollo/client';
+import { Mutation_User_Signup } from '../utils/queries';
 const SignupForm = () => {
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
@@ -11,48 +12,75 @@ const SignupForm = () => {
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+  const [signupUser,{data,loading}] = useMutation(Mutation_User_Signup)
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
+  // const handleFormSubmit = async (event) => {
+  //   event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  //   // check if form has everything (as per react-bootstrap docs)
+  //   const form = event.currentTarget;
+  //   if (form.checkValidity() === false) {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //   }
+
+  //   try {
+  //     const response = await createUser(userFormData);
+
+  //     if (!response.ok) {
+  //       throw new Error('something went wrong!');
+  //     }
+
+  //     const { token, user } = await response.json();
+  //     console.log(user);
+  //     Auth.login(token);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setShowAlert(true);
+  //   }
+
+  //   setUserFormData({
+  //     username: '',
+  //     email: '',
+  //     password: '',
+  //   });
+  // };
+  const handleFormSubmit2 = async(e)=>{
+
+    e.preventDefault();
+    console.log(userFormData)
 
     try {
-      const response = await createUser(userFormData);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
+      const response = await signupUser({variables:userFormData})
+      console.log(response.data.addUser)
+      if (!response.data.addUser) {
+          throw new Error('something went wrong!');
       }
+  
+        const { token, user } = response.data.addUser;
+        console.log(user);
+        Auth.login(token);
+      } catch (err) {
+        console.error(err);
+        setShowAlert(true);
+      }
+  
+      setUserFormData({
+        username: '',
+        email: '',
+        password: '',
+      });
 
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
-    }
-
-    setUserFormData({
-      username: '',
-      email: '',
-      password: '',
-    });
-  };
-
+  }
   return (
     <>
       {/* This is needed for the validation functionality above */}
-      <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleFormSubmit2}>
         {/* show alert if server response is bad */}
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your signup!

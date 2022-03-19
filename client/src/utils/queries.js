@@ -10,6 +10,7 @@ export const QUERY_USERS = gql`
     }
   }
 `;
+
 export const Mutation_User_Login = gql`
 
 mutation($email: String!, $password: String!){
@@ -24,16 +25,15 @@ mutation($email: String!, $password: String!){
 }
 `
 
-// export const Mutation_User_Signup = gql`
-
-// mutation($email: String!, $password: String!){
-//   addUser(username: String!, email: String!, password :String!) {
-//     token
-//     user {
-//       _id
-//       email
-//       username
-//     }
-//   }
-// }
-//`
+export const Mutation_User_Signup = gql`
+  mutation($username: String!, $email: String!, $password: String!){
+    addUser(username: $username, email: $email, password: $password) {
+      token
+      user {
+        _id
+        email
+        username
+      }
+    }
+}
+`
