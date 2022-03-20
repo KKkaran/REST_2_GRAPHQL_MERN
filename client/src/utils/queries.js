@@ -10,7 +10,17 @@ export const QUERY_USERS = gql`
     }
   }
 `;
+export const Query_Me = gql`
+  query me{
+    me {
+      email
+      savedBooks {
+        bookId
+      }
+    }
+  }
 
+`
 export const Mutation_User_Login = gql`
 
 mutation($email: String!, $password: String!){
@@ -47,6 +57,19 @@ export const Mutation_addBook = gql `
         bookId
         title
         description
+      }
+    }
+  }
+`
+
+export const Mutation_deleteBook = gql`
+  mutation($bookId: String!){
+    deleteBook(bookId: $bookId) {
+      username
+      savedBooks {
+        bookId
+        title
+        bookId
       }
     }
   }
