@@ -8,15 +8,17 @@ import { removeBookId } from '../utils/localStorage';
 import { Query_Me, Mutation_deleteBook } from '../utils/queries';
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
+  
+  //const [userData, setUserData] = useState({});
   const [deleteBook,{error}] = useMutation(Mutation_deleteBook)
 
+  const {loading,errors,data,refetch} = useQuery(Query_Me)
 
-  const {loading,d} = useQuery(Query_Me)
-  console.log(d)
-
-
-
+  useEffect(() => {
+    refetch();
+  }, [refetch, data]);
+  
+  const userData = data?.me;
   // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length;
 
@@ -54,10 +56,13 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = await deleteBook({variables:bookId});
+      console.log(bookId)
+      await deleteBook({variables:{bookId}}); 
 
-      // upon success, remove book's id from localStorage
-      removeBookId(bookId);
+      
+      // // upon success, remove book's id from localStorage
+       removeBookId(bookId);
+       refetch();
     } catch (err) {
       console.error(err);
     }
@@ -70,7 +75,7 @@ const SavedBooks = () => {
 
   return (
     <>
-      {/* <Jumbotron fluid className='text-light bg-dark'>
+      <Jumbotron fluid className='text-light bg-dark'>
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
@@ -78,7 +83,7 @@ const SavedBooks = () => {
       <Container>
         <h2>
           {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
+          ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <CardColumns>
@@ -98,7 +103,7 @@ const SavedBooks = () => {
             );
           })}
         </CardColumns>
-      </Container> */}
+      </Container>
     </>
   );
 };
